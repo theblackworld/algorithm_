@@ -129,8 +129,55 @@ void HeapSort(T* array, int size, Cmp cmp = Compare){
 }
 
 
+4。 快速排序
 
 
+//  快速排序原理：利用分治的思想在每一趟排序中以选定的基准为界进行排序；
+//  复杂度：最好： o(nlgn)， 最坏: o(n2);
+//  稳定性：不稳定， 至于为什么不是稳定的可以给出如下例子:
+
+9 9 9 4 3 121 12 89 在第一趟的时候q就被换到了最后导致相对位置发生改变;  
+
+
+template<class T>
+void QSort(T* array, int size ,Cmp cmp = Compare){
+	
+  if(array == nullptr || size<=0) return;	
+	
+  Sort(array, 0, size-1,cmp);	
+}
+
+template<class T>
+void Sort(T* array, int start,int end,Cmp cmp = Compare){
+  
+  if(start < end){
+	int division = Part(array, start, end, cmp);
+    Sort(array, start, division-1, cmp);	
+    Sort(array, division+1, end, cmp)	
+  }  
+		
+}
+
+template<class T>
+int Part(T* array, int start, int end, Cmp cmp = Compare){
+	
+  int key = array[start];
+  
+  //没有进行任何优化的做法;
+
+  while(start < end){
+	  
+	while(start < end && cmp(key, array[end]) <=0) end--;  
+	
+	swap(array[start],array[end]);
+
+	while(start < end && cmp(key, array[end]) <=0) start++;
+  
+    swap(array[start], array[end]);  
+  }  
+  
+  return start;  
+}
 
 
 
