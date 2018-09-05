@@ -31,19 +31,16 @@ class LRUCache{
 	  
 	  
    	private:
-	
-	  //function for the inner call;
-	  enum TYPE{
-		NOT_FOUND;  
-	  }
-	  
+	 
 	  void SetHead(Node* node);
 	  
 	  void Remove(Node* node);
 	
-      LRUCache(const LRUCache&);	
+	  // no copying allowed;
+	  
+      LRUCache(const LRUCache&){};	
  	
-	  LRUCache& operator=(const LRUCache&);
+	  LRUCache& operator=(const LRUCache&){};
 	  
 	  struct Node{
 		_KEY    key_;  
@@ -69,6 +66,23 @@ class LRUCache{
 	  unordered_map<_KEY, Node*>  container_;	  	
 };
 
+template<class _KEY, class _VALUE>
+void LRUCache<_KEY, _VALUE>::~LRUCache(){
+	
+  for(auto iter = container_.begin(); iter != container_.end();){
+	  
+    delete iter->second;    
+	
+	iter->second = nullptr;
+	
+	container_.erase(iter++);  //防止迭代器失效，在删除的同时访问下一个位置;
+	
+  }  
+  
+  head_ = nullptr;
+  
+  end_ = nullptr;
+}
 
 template<class _KEY, class _VALUE>
 void LRUCache<_KEY , _VALUE>::SetHead(Node* node){
@@ -124,7 +138,7 @@ _VALUE LRUCache<_KEY, _VALUE>::Get(_KEY key , int& flag){
 	 // exists value;  
      Remove(container_[key]);
 
-     sethead(container_[key]);	 
+     SetHead(container_[key]);	 
       
 	 flag = 1; //意味着你可以获得数据是有效的;
 	 
@@ -134,49 +148,38 @@ _VALUE LRUCache<_KEY, _VALUE>::Get(_KEY key , int& flag){
 
 template<class _KEY, class _VALUE>
 void LRUCache<_KEY, _VALUE>::Put(_KEY key, _VALUE value){
+  
+  assert(capacity_ <= 0 );	
 	
-  if(container_.size() == capacity_){
+  if(container_.count(key) !=0){
 	  
-	Node* t = new Node(key,value);
-	
-	remove(end_); //仍需要记录end_;
-	
-	container_.insert(pair<_KEY, Node*>())
-	
-  }	
+	container_[key]->value_ = value;  
+	  
+	Remove(container_[key]);
+ 
+    SetHead(container_[key]); 
+  }
   else{
-	  
-	  
-  }		
+		  
+	Node* t = new Node(key, value);  
+	
+    if(container.size() == capacity_){
+	 
+       Node* temp = end_;
+	   
+	   Remove(end_);
+	   
+	   SetHead(t);
+	   
+	   delete temp;
+	    		
+	   container_.insert(pair<_KEY, Node*>(key, t));	
+	}
+	else{
+	   SetHead(t);
+	   
+	   container_.insert(pair<_KEY, Node*>(key, t));
+	}
+  }
 }
 
-
-	   Node* temp = nullptr;
-
-       if(capacity_ == 0) return ;
-
-       if(store_.count(key)!=0){
-
-		  store_[key]->value_ =  value;
-
-		  remove(store_[key]);
-
-		  sethead(store_[key]);
-	   }
-       else{
-		  Node*  t = new Node(key,value);
-
-		  if(store_.size() == capacity_){
-			store_.erase(end_->key_);
-            temp = end_;
-            remove(end_);
-            sethead(t);
-			delete temp;
-	        store_.insert(pair<int,Node*>(key,t));
-		  }
-		  else{
-			sethead(t);
-            store_.insert(pair<int,Node*>(key,t));
-		  }
-	   }
-	}

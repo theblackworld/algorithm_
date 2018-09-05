@@ -16,6 +16,7 @@ struct Node{
    vector<Node*> child_;	
 	
    Node(char value): value_(value), child_(vector<Node*> temp(NUM, nullptr)){} 
+};
 
 class Dictionary{
 	
