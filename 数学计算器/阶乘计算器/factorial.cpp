@@ -3,7 +3,6 @@
      根据num_计算num_!结果，如果大于20则把相应结果放置在result_vec_中;
 */
 void Multiply::Calculate(){
-
   long long result = 0;
 
   int pos = 0;
@@ -12,18 +11,17 @@ void Multiply::Calculate(){
   vector<int> containt(100000,0);
 
   if(num_ <=20){
-	result_ = Count(num_);
+    result_ = Count(num_);
   }
   else{
-	result = Count(20);
-
-	while(result != 0){
+    result = Count(20);
+    while(result != 0){
       contain[pos] = (result%10);
       pos++;  //代表几个数;
       result = result/10;
     }
 
-	for(int i=21; i<=num_; i++){
+    for(int i=21; i<=num_; i++){
 
       int temp = i;
       int add = 0;
@@ -60,11 +58,11 @@ void Multiply::Calculate(){
 
     pos_ = pos;
 
-	result_vec_.resize(pos);
+    result_vec_.resize(pos);
+ 
+    cout<<"result size is"<<result_vec_.size()<<endl;
 
-	cout<<"result size is"<<result_vec_.size()<<endl;
-
-	for(int i=0; i<pos; i++) result_vec_[i]= contain[i];
+    for(int i=0; i<pos; i++) result_vec_[i]= contain[i];
 
     reverse(result_vec_.begin(), result_vec_.end());
   }
@@ -74,16 +72,15 @@ void Multiply::Calculate(){
     计算小于20数的阶乘;
 */
 long long Multiply::Count(int n){
+  long long result = 1;
 
- long long result = 1;
+  if(n==0) return  1;
 
- if(n==0) return  1;
+  for(int i=1; i<=n; i++){
+    result = result*i;
+  }
 
- for(int i=1; i<=n; i++){
-   result = result*i;
- }
-
- return result;
+  return result;
 }
 /*
   函数说明:
@@ -92,6 +89,7 @@ long long Multiply::Count(int n){
 */
 int Multiply::SumByVector(vector<int>& input){
   int result = 0;
+  
   for(int i=0; i<input.size(); i++){
     result += input[i];
   }
@@ -103,9 +101,8 @@ int Multiply::SumByVector(vector<int>& input){
 	计算小于等于20阶乘结果的各个位之和;
 */
 int Multiply::SumByNum(long long num){
-
   long long sum = 0;
-
+	
   while(num/10!=0){
     sum += num%10;
     num = num/10;
