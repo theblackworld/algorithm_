@@ -50,7 +50,7 @@ class LRUCache{
 		Node*   prev_; 
 		
 		Node*   next_;
-     
+   
   	    Node(_KEY key, _VALUE value) : key_(key),
                                        value_(value),
                                        prev_(nullptr),									   
