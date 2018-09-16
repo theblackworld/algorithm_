@@ -87,10 +87,5 @@ string FindTheSameOrderString(string& str1, string& str2){
 
    for(int i=0; i<=len1; i++) dp[i][0] = 0; 
    
-   for(int j=0; j<=len2; j++)  dp[0][j] = 0;
-	   
-    	
-	
-	
-	
+   for(int j=0; j<=len2; j++)  dp[0][j] = 0;	
 }
