@@ -15,6 +15,7 @@
 
   5. 最后弹出所有栈中的内容输出;
 */
+/*
 #include<iostream>
 #include<string>
 #include<stack>
@@ -29,22 +30,22 @@ int Operation(int a, int b, char c){
   }
 }
 
-int Calcualte(const string &input){
+int Calcualte(const string &mid_){
 
   stack<int> s;
 
   int j=0;
 
-  for(int i=0; i<input.size(); i++) cout<<input[i];
+  for(int i=0; i<mid_.size(); i++) cout<<mid_[i];
 
-  for(int i=0; i<input.size();){
-    if(input[i]>='0' && input[i] <= '9'){
-      int result = 0;
+  for(int i=0; i<mid_.size();){
+    if(mid_[i]>='0' && mid_[i] <= '9'){
+      int last_ = 0;
       //陷入死循环的怪圈;
-      for(j=i; j<input.size() && input[j]!='#'; j++) {
-        result = result*10+static_cast<int>(input[j] - '0');
+      for(j=i; j<mid_.size() && mid_[j]!='#'; j++) {
+        last_ = last_*10+static_cast<int>(mid_[j] - '0');
       }
-      s.push(result);
+      s.push(last_);
       i = j+1;
     }
     else{
@@ -52,7 +53,7 @@ int Calcualte(const string &input){
       s.pop();
       int a = s.top();
       s.pop();
-      s.push(Operation(a,b,input[i]));
+      s.push(Operation(a,b,mid_[i]));
       i++;
     }
   }
@@ -64,42 +65,42 @@ bool Cmp(char a, char b){ //是否该出栈;
   if(a == '+' || a =='-') return true;
   else if(a == '*' || a == '/') return (b == '*') || ( b == '/');
 }
-void PriorityOut(string& input, stack<char>& s,char a){
+void PriorityOut(string& mid_, stack<char>& s,char a){
   while(!s.empty()){
     char b = s.top();
 
 	if(b!= '(' && Cmp(a,b)){
 	  s.pop();
-	  input.push_back(b);
+	  mid_.push_back(b);
 	}
     else break;
   }
   s.push(a);
 }
-string Poland(string &input){
+string Poland(string &mid_){
   stack<char> s_;
-  string result;
+  string last_;
   //如果是想检查任意的也无非是这样;
-  for(int i=0; i<input.size(); i++){
-	if(input[i] >='0' && input[i]<='9'){
-      if(i < (input.size() -1) && input[i+1] >='0' && input[i+1]<='9')
-	    result.push_back(input[i]);
+  for(int i=0; i<mid_.size(); i++){
+	if(mid_[i] >='0' && mid_[i]<='9'){
+      if(i < (mid_.size() -1) && mid_[i+1] >='0' && mid_[i+1]<='9')
+	    last_.push_back(mid_[i]);
 	  else{
-        result.push_back(input[i]); //以#'作为分界线;
-        result.push_back('#');
+        last_.push_back(mid_[i]); //以#'作为分界线;
+        last_.push_back('#');
 	  }
 	}
-	else if(input[i] == '('){
-	  s_.push(input[i]);
+	else if(mid_[i] == '('){
+	  s_.push(mid_[i]);
 	}
-	else if(input[i] == ')'){
+	else if(mid_[i] == ')'){
 	  //需要出栈;
       while(!s_.empty()){
 	    char c = s_.top();
 	    //cout<<"(:"<<"hehe"<<c<<endl;
 		s_.pop();
 		if(c!= '('){
-		  result.push_back(c);
+		  last_.push_back(c);
 		}
 		else{
 		  break;
@@ -107,21 +108,153 @@ string Poland(string &input){
 	  }
 	}
     else{
-	  PriorityOut(result, s_, input[i]);
+	  PriorityOut(last_, s_, mid_[i]);
 	}
   }
   //最后弹出所有内容;
   while(!s_.empty()){
-	result.push_back(s_.top());
+	last_.push_back(s_.top());
     s_.pop();
   }
 
-  return result;
+  return last_;
 }
 int main(){
-  string input = "900+30*(30-10)*3+40/2";
-  cout<<Poland(input)<<endl;
-  string result = Poland(input);
-  cout<<Calcualte(result)<<endl;
+  string mid_ = "900+30*(30-10)*3+40/2";
+  cout<<Poland(mid_)<<endl;
+  string last_ = Poland(mid_);
+  cout<<Calcualte(last_)<<endl;
   return 0;
+}*/
+
+class  Arithmetic{
+  public:
+    Arithmetic(string& mid_):mid_(mid_){}
+    
+	~Arithmetic();	
+	
+	bool Cmp(char a, char b){
+      if(a == '+' || a =='-') return true;
+      else if(a == '*' || a == '/') return (b == '*') || ( b == '/');
+    }
+	
+	void PriorityOut(stack<char>& s, char a);
+	
+	void Poland();
+	
+	int Calcualte();
+    
+	int Operation(int a, int b, char c);
+	
+	void Reset(string& input){		
+	  mid_ = input;
+      last_.clear();	  
+	};
+	
+  private:
+    //no copyinh allowed here;
+    Arithmetic(const Arithmetic &){};
+    Arithmetic& operator=(const Arithmetic&){};	
+	
+    string mid_;  // 中缀表达式;
+    string last_; // 后缀表达式; 	
 }
+
+void Arithmetic::PriorityOut(stack<char>& s, char a){
+  while(!s.empty()){
+    char b = s.top()；
+	if(b!= '(' && Cmp(a,b)){
+	  s.pop();
+	  last_.push_back(b); //生成后缀表达式;
+	}
+    else break;
+  }
+  s.push(a);
+}
+//last_ 由  mid_生成;
+void Arithmetic::Poland(){
+  
+  stack<char> s_;
+  //如果是想检查任意的也无非是这样;
+  for(int i=0; i<mid_.size(); i++){
+	if(mid_[i] >='0' && mid_[i]<='9'){
+      if(i < (mid_.size() -1) && mid_[i+1] >='0' && mid_[i+1]<='9')
+	    last_.push_back(mid_[i]);
+	  else{
+        last_.push_back(mid_[i]); //以#'作为分界线;
+        last_.push_back('#');
+	  }
+	}
+	else if(mid_[i] == '('){
+	  s_.push(mid_[i]);
+	}
+	else if(mid_[i] == ')'){
+	  //需要出栈;
+      while(!s_.empty()){
+	    char c = s_.top();
+	    //cout<<"(:"<<"hehe"<<c<<endl;
+		s_.pop();
+		if(c!= '('){
+		  last_.push_back(c);
+		}
+		else{
+		  break;
+		}
+	  }
+	}
+    else{
+	  PriorityOut(s_,  mid_[i]);
+	}
+  }
+  //最后弹出所有内容;
+  while(!s_.empty()){
+	last_.push_back(s_.top());
+    s_.pop();
+  }	
+}
+
+int Arithmetic::Calcualte(){
+  //step one ;
+  
+  
+  Poland();
+		
+  stack<int> s;
+  
+  int j=0;
+
+  for(int i=0; i<last_.size();){
+    if(last_[i]>='0' && last_[i] <= '9'){
+      int result = 0;
+      //正负数在此完成;
+      for(j=i; j<last_.size() && last_[j]!='#'; j++) {
+        result = result*10+static_cast<int>(last_[j] - '0'); 
+      }
+      s.push(result);
+      i = j+1;
+    }
+    else{
+      int b = s.top();
+      s.pop();
+      int a = s.top();
+      s.pop();
+      s.push(Operation(a, b, last_[i]));
+      i++;
+    }
+  }
+  return s.top();
+}	
+	
+
+//精度控制在这个函数里面完成;
+int Arithmetic::Operation(int a, int b, char c){
+   switch(c){
+    case '+': return a+b;
+    case '-': return a-b;
+    case '*': return a*b;
+    case '/': return a/b;
+    default : break;      //may exists no return;
+  }  
+}
+
+

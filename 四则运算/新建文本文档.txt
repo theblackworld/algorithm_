@@ -1,0 +1,1 @@
+add more function to let it can calculate the basic + - * and /;
